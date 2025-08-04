@@ -35,6 +35,8 @@ export default function AnimatedList({ children: _children, ...props }: Props) {
     return null;
   });
 
+  const childrenCount = Children.count(children);
+
   useEffect(() => {
     if (isFistRender.current) {
       isFistRender.current = false;
@@ -43,5 +45,19 @@ export default function AnimatedList({ children: _children, ...props }: Props) {
     setIsChangedChildren(true);
   }, [_children]);
 
-  return <div {...props}>{children}</div>;
+  return (
+    <div
+      css={{
+        position: 'relative',
+        transition: 'height 0.5s',
+        width: '300px',
+      }}
+      style={{
+        height: childrenCount * 40 + (childrenCount - 1) * 8,
+      }}
+      {...props}
+    >
+      {children}
+    </div>
+  );
 }

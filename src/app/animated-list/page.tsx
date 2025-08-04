@@ -17,14 +17,7 @@ export default function AnimatedListPage() {
         height: '100vh',
       }}
     >
-      <AnimatedList
-        css={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: 8,
-        }}
-      >
+      <AnimatedList>
         {list.map((it) => (
           <AnimatedList.Item key={it}>{it}</AnimatedList.Item>
         ))}
