@@ -1,10 +1,5 @@
 import { css, keyframes } from '@emotion/react';
-import { MouseEvent, useState } from 'react';
-
-type Position = {
-  x: number;
-  y: number;
-};
+import { useCursorBloom } from '../hooks';
 
 type Props = {
   gradients: string[];
@@ -13,54 +8,16 @@ type Props = {
 };
 
 export default function CursorBloom(props: Props) {
-  const [effectPosition, setEffectPosition] = useState<Position | null>(null);
-
-  const [tiltValue, setTiltValue] = useState<Position | null>(null);
-
-  const [pressed, setPressed] = useState<boolean>(false);
-
-  function handleMouseUnavailable(e: MouseEvent<HTMLDivElement>) {
-    setEffectPosition(null);
-    setTiltValue(null);
-  }
-
-  function handleMouseAvailable(e: MouseEvent<HTMLDivElement>) {
-    const { x, y, width, height } = e.currentTarget.getBoundingClientRect();
-
-    const relativeX = e.clientX - x;
-    const relativeY = e.clientY - y;
-
-    setEffectPosition({
-      x: relativeX,
-      y: relativeY,
-    });
-
-    setTiltValue({
-      x: (relativeX / width - 0.5) * 30,
-      y: (0.5 - relativeY / height) * 30,
-    });
-  }
-
-  function handleMouseDown() {
-    setPressed(true);
-  }
-
-  function handleMouseUp() {
-    setPressed(false);
-  }
+  const { effect, tilt, pressed, ...containerProps } = useCursorBloom();
 
   return (
     <div
       css={s.container(props.gradients)}
-      onMouseEnter={handleMouseAvailable}
-      onMouseLeave={handleMouseUnavailable}
-      onMouseMove={handleMouseAvailable}
-      onMouseDown={handleMouseDown}
-      onMouseUp={handleMouseUp}
+      {...containerProps}
       style={
-        tiltValue
+        tilt
           ? {
-              transform: `rotateX(${tiltValue.x}deg) rotateY(${tiltValue.y}deg) rotateZ(0)`,
+              transform: `rotateX(${tilt.rotateX}deg) rotateY(${tilt.rotateY}deg) rotateZ(0)`,
             }
           : undefined
       }
@@ -69,12 +26,12 @@ export default function CursorBloom(props: Props) {
 
       <span css={s.description}>{props.description}</span>
 
-      {effectPosition !== null && (
+      {effect !== null && (
         <div
           css={[s.effect, pressed ? s.spreadEffect : null]}
           style={{
-            left: effectPosition.x,
-            top: effectPosition.y,
+            left: effect.x,
+            top: effect.y,
           }}
         ></div>
       )}
@@ -130,15 +87,15 @@ const s = {
     borderRadius: '50%',
     background:
       'radial-gradient(rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0) 70%)',
-    transition: 'width 0.6s, height 0.6s, background 0.3s',
+    transition: 'width 0.6s, height 0.6s, background 0.4s',
     animationName: k.effect,
     animationFillMode: 'forwards',
     animationDuration: '0.7s',
     animationTimingFunction: 'ease',
   }),
   spreadEffect: css({
-    width: '500%',
-    height: '500%',
+    width: '400%',
+    height: '400%',
     background:
       'radial-gradient(rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0))',
   }),
