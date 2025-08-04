@@ -14,25 +14,43 @@ type Props = {
 export default function CursorBloom(props: Props) {
   const [effectPosition, setEffectPosition] = useState<Position | null>(null);
 
-  function handleMouseLeave(e: MouseEvent<HTMLDivElement>) {
+  const [tiltValue, setTiltValue] = useState<Position | null>(null);
+
+  function handleMouseUnavailable(e: MouseEvent<HTMLDivElement>) {
     setEffectPosition(null);
+    setTiltValue(null);
   }
 
-  function handleSetEffectPosition(e: MouseEvent<HTMLDivElement>) {
-    const { x, y } = e.currentTarget.getBoundingClientRect();
+  function handleMouseAvailable(e: MouseEvent<HTMLDivElement>) {
+    const { x, y, width, height } = e.currentTarget.getBoundingClientRect();
+
+    const relativeX = e.clientX - x;
+    const relativeY = e.clientY - y;
 
     setEffectPosition({
-      x: e.clientX - x,
-      y: e.clientY - y,
+      x: relativeX,
+      y: relativeY,
+    });
+
+    setTiltValue({
+      x: (relativeX / width - 0.5) * 30,
+      y: (0.5 - relativeY / height) * 30,
     });
   }
 
   return (
     <div
       css={s.container}
-      onMouseEnter={handleSetEffectPosition}
-      onMouseLeave={handleMouseLeave}
-      onMouseMove={handleSetEffectPosition}
+      onMouseEnter={handleMouseAvailable}
+      onMouseLeave={handleMouseUnavailable}
+      onMouseMove={handleMouseAvailable}
+      style={
+        tiltValue
+          ? {
+              transform: `rotateX(${tiltValue.x}deg) rotateY(${tiltValue.y}deg) rotateZ(0)`,
+            }
+          : undefined
+      }
     >
       <p css={s.top}>{props.top}</p>
 
@@ -73,6 +91,8 @@ const s = {
     position: 'relative',
     overflow: 'hidden',
     cursor: 'pointer',
+    perspective: '800px',
+    transition: '0.1s',
   }),
   top: css({
     fontWeight: 'bold',
