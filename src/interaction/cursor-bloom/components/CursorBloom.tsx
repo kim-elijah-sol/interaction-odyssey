@@ -16,6 +16,8 @@ export default function CursorBloom(props: Props) {
 
   const [tiltValue, setTiltValue] = useState<Position | null>(null);
 
+  const [pressed, setPressed] = useState<boolean>(false);
+
   function handleMouseUnavailable(e: MouseEvent<HTMLDivElement>) {
     setEffectPosition(null);
     setTiltValue(null);
@@ -38,12 +40,22 @@ export default function CursorBloom(props: Props) {
     });
   }
 
+  function handleMouseDown() {
+    setPressed(true);
+  }
+
+  function handleMouseUp() {
+    setPressed(false);
+  }
+
   return (
     <div
       css={s.container}
       onMouseEnter={handleMouseAvailable}
       onMouseLeave={handleMouseUnavailable}
       onMouseMove={handleMouseAvailable}
+      onMouseDown={handleMouseDown}
+      onMouseUp={handleMouseUp}
       style={
         tiltValue
           ? {
@@ -58,7 +70,7 @@ export default function CursorBloom(props: Props) {
 
       {effectPosition !== null && (
         <div
-          css={s.effect}
+          css={[s.effect, pressed ? s.spreadEffect : null]}
           style={{
             left: effectPosition.x,
             top: effectPosition.y,
@@ -93,6 +105,9 @@ const s = {
     cursor: 'pointer',
     perspective: '800px',
     transition: '0.1s',
+    ':active': {
+      transform: 'scale(0.98) !important',
+    },
   }),
   top: css({
     fontWeight: 'bold',
@@ -113,9 +128,16 @@ const s = {
     borderRadius: '50%',
     background:
       'radial-gradient(rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0) 70%)',
+    transition: 'width 0.6s, height 0.6s, background 0.3s',
     animationName: k.effect,
     animationFillMode: 'forwards',
     animationDuration: '0.7s',
     animationTimingFunction: 'ease',
+  }),
+  spreadEffect: css({
+    width: '500%',
+    height: '500%',
+    background:
+      'radial-gradient(rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0))',
   }),
 };
