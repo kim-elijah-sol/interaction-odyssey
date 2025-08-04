@@ -7,6 +7,7 @@ type Position = {
 };
 
 type Props = {
+  gradients: string[];
   top: React.ReactNode;
   description: React.ReactNode;
 };
@@ -50,7 +51,7 @@ export default function CursorBloom(props: Props) {
 
   return (
     <div
-      css={s.container}
+      css={s.container(props.gradients)}
       onMouseEnter={handleMouseAvailable}
       onMouseLeave={handleMouseUnavailable}
       onMouseMove={handleMouseAvailable}
@@ -95,20 +96,21 @@ const k = {
 };
 
 const s = {
-  container: css({
-    padding: '24px',
-    background: 'linear-gradient(135deg, #3a78ff, #85a7f1)',
-    borderRadius: '36px',
-    width: '380px',
-    position: 'relative',
-    overflow: 'hidden',
-    cursor: 'pointer',
-    perspective: '800px',
-    transition: '0.1s',
-    ':active': {
-      transform: 'scale(0.98) !important',
-    },
-  }),
+  container: (gradients: string[]) =>
+    css({
+      padding: '24px',
+      background: `linear-gradient(135deg, ${gradients.join(', ')})`,
+      borderRadius: '36px',
+      width: '380px',
+      position: 'relative',
+      overflow: 'hidden',
+      cursor: 'pointer',
+      perspective: '800px',
+      transition: '0.1s',
+      ':active': {
+        transform: 'scale(0.98) !important',
+      },
+    }),
   top: css({
     fontWeight: 'bold',
     fontSize: '36px',
