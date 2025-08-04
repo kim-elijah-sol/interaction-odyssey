@@ -2,13 +2,14 @@ import { css, keyframes } from '@emotion/react';
 import { PropsWithChildren } from 'react';
 
 type Props = PropsWithChildren<{
-  index?: unknown;
+  index?: number;
+  isDelayRemove?: boolean;
 }>;
 
 export default function AnimatedListItem(props: Props) {
   const index = (props.index as number) ?? 0;
 
-  const delay = index * 0.3;
+  const delay = props.isDelayRemove ? 0 : index * 0.3;
 
   return (
     <div
