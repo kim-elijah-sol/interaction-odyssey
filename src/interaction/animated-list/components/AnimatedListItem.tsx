@@ -1,9 +1,11 @@
 import { css, keyframes } from '@emotion/react';
-import { PropsWithChildren } from 'react';
+import { MouseEventHandler, PropsWithChildren } from 'react';
 
 type Props = PropsWithChildren<{
   index?: number;
   isDelayRemove?: boolean;
+
+  onClick?: MouseEventHandler<HTMLDivElement>;
 }>;
 
 export default function AnimatedListItem(props: Props) {
@@ -15,6 +17,7 @@ export default function AnimatedListItem(props: Props) {
 
   return (
     <div
+      onClick={props.onClick}
       css={s.container}
       style={{
         animationDelay: `${delay}s`,

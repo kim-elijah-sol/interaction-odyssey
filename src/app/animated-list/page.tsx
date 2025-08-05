@@ -19,7 +19,14 @@ export default function AnimatedListPage() {
     >
       <AnimatedList>
         {list.map((it) => (
-          <AnimatedList.Item key={it}>{it}</AnimatedList.Item>
+          <AnimatedList.Item
+            onClick={() => {
+              setList((list) => list.filter((item) => item !== it));
+            }}
+            key={it}
+          >
+            {it}
+          </AnimatedList.Item>
         ))}
       </AnimatedList>
 
